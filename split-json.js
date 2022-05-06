@@ -1,4 +1,4 @@
-if (process.argv.length < 3) {
+if (process.argv.length < 4) {
   console.log("target file path is required.");
   process.exit(1);
 }
@@ -15,7 +15,7 @@ fs.readFile(target, function (err, data) {
   while (jsonArray.length !== 0) {
     const folder = "./splited/";
     var fileName = folder + target + i + ".json";
-    fs.writeFileSync(fileName, JSON.stringify(jsonArray.splice(0, 50)));
+    fs.writeFileSync(fileName, JSON.stringify(jsonArray.splice(0, process.argv[3])));
     i++;
   }
 });

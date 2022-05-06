@@ -4,29 +4,22 @@ require("firebase/firestore");
 const fs = require("fs");
 const JSONStream = require("JSONStream");
 const es = require("event-stream");
+const Firestore = require("@google-cloud/firestore");
 
 const { resolve } = require("path");
 
-// Initialize Firebase
-// Get your firebase credentials from
-// the firebase console for your project
-firebase.initializeApp({
+// Initialize Firebase configs file
+const config = {
   projectId: process.env.PROJECT_ID,
   keyFilename: process.env.SERVICE_ACCOUNT,
-});
+};
 
-/**
- * Tutorial on how to upload json data to firestore
- * Using JavaScript
- * RUN: node json-to-firestore/populateJsonFirestore.js [RELATIVE PATH TO FILE] [FIRESTORE METHOD] [COLLECTION NAME]
- */
 class PopulateJsonFireStore {
   // class constructor
   constructor() {
     console.time("Time taken");
-    this.db = firebase.firestore();
+    this.db = new Firestore(config);
     // Obtain the relative path, method type, collection name arguments provided through
-    console.log(process.argv);
     const [, , filepath, type, collectionname] = process.argv;
 
     // Obtain the absolute path for the given relative
@@ -97,6 +90,12 @@ class PopulateJsonFireStore {
     if (data.length < 1) {
       console.error("Make sure file contains items.");
     }
+    //const collection = this.db.collection("Counters");
+    //const documents = await collection.get();
+    //const arr = documents.docs.map((x) => {
+    //  return x.data();
+    //});
+    //console.log(arr);
     var i = 0;
     for (var item of data) {
       try {
@@ -122,7 +121,7 @@ class PopulateJsonFireStore {
   // Sets data to firestore database
   // Firestore auto generated IDS
   add(item) {
-    console.log(`Adding item with id ${item['ID.']}`);
+    console.log(`Adding item with id ${item["ID."]}`);
     /*return this.db
       .collection(this.collectionname)
       .add(Object.assign({}, item))
@@ -133,9 +132,9 @@ class PopulateJsonFireStore {
   // Set data with specified ID
   // Custom Generated IDS
   set(item) {
-    console.log(`setting item with id ${item['ID.']}`);
+    console.log(`setting item with id ${item["ID."]}`);
     return this.db
-      .doc(`${this.collectionname}/${item['ID.']}`)
+      .doc(`${this.collectionname}/${item["ID."]}`)
       .set(Object.assign({}, item))
       .then(() => true)
       .catch((e) => console.error(e.message));
