@@ -7,7 +7,7 @@ const es = require("event-stream");
 const Firestore = require("@google-cloud/firestore");
 //import { Firestore } from '@google-cloud/firestore';
 const { resolve } = require("path");
-
+const BigBatch = require('@qualdesk/firestore-big-batch').BigBatch;
 // Initialize Firebase configs file
 const config = {
   projectId: process.env.PROJECT_ID,
@@ -95,7 +95,8 @@ class PopulateJsonFireStore {
     if (data.length < 1) {
       console.error("Make sure file contains items.");
     }
-    const batch = this.db.batch();
+    const batch = new BigBatch({ firestore: this.db })
+    //const batch = this.db.batch();
     for (var item of data) {
       try {
         if (this.type === "set") {
