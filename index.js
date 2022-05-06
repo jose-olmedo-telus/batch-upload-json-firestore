@@ -5,7 +5,7 @@ const fs = require("fs");
 const JSONStream = require("JSONStream");
 const es = require("event-stream");
 const Firestore = require("@google-cloud/firestore");
-
+//import { Firestore } from '@google-cloud/firestore';
 const { resolve } = require("path");
 
 // Initialize Firebase configs file
@@ -32,9 +32,9 @@ class PopulateJsonFireStore {
     this.collectionname = collectionname;
 
     // Lets make sure the right firestore method is used.
-    if (this.type !== "set" && this.type !== "add") {
+    if (this.type !== "set" && this.type !== "batch") {
       console.error(`Wrong method type ${this.type}`);
-      console.log("Accepted methods are: set or add");
+      console.log("Accepted methods are: set or batch");
       this.exit(1);
     }
 
@@ -90,43 +90,39 @@ class PopulateJsonFireStore {
     if (data.length < 1) {
       console.error("Make sure file contains items.");
     }
+    const batch = this.db.batch();
     //const collection = this.db.collection("Counters");
     //const documents = await collection.get();
     //const arr = documents.docs.map((x) => {
     //  return x.data();
     //});
     //console.log(arr);
-    var i = 0;
     for (var item of data) {
       try {
-        this.type === "set" ? await this.set(item) : await this.add(item);
+        if (this.type === "set") {
+          await this.set(item);
+        } else if (this.type === "batch") {
+          this.batchFun(item, batch);
+        }
       } catch (e) {
         console.log(e.message);
-        this.exit(1);
       }
-      // Successfully got to end of data;
-      // print success message
-      if (data.length - 1 === i) {
-        console.log(
-          `**************************\n****SUCCESS UPLOAD*****\n**************************`
-        );
-        console.timeEnd("Time taken");
-        this.exit(0);
-      }
-
-      i++;
     }
+    if (this.type === "batch") {
+      await batch.commit();
+    }
+    console.log("IMPORT SUCCESSFUL!")
+    this.exit(0);
   }
 
   // Sets data to firestore database
   // Firestore auto generated IDS
-  add(item) {
-    console.log(`Adding item with id ${item["ID."]}`);
-    /*return this.db
+  batchFun(item, batch) {
+    console.log(`Batching item with id ${item["id"]}`);
+    const collectionRef = this.db
       .collection(this.collectionname)
-      .add(Object.assign({}, item))
-      .then(() => true)
-      .catch((e) => console.error(e.message));*/
+      .doc(String(item["id"]));
+    batch.set(collectionRef, item);
   }
 
   // Set data with specified ID
