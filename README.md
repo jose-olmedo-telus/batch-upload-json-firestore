@@ -7,9 +7,10 @@ split-json.js requires 2 arguments.
 eg. `node split-json.js ./PAPM_cfp_CARRIER_FOOT_PRINT.json 10000`
 
 To migrate, use the index.js file
-index.js requires 3 arguments 
+index.js requires 4 arguments 
 1. Filepath of the json to migrate
-2. method: "add" or "set"
-3. name of the collections
+2. method: "add" or "batch"
+3. Name of the collections
+4. The id key of the object
 
-eg `node index.js ./splited/example.json2.json set tmf-630_carrier_footprint`
+eg `node index.js ./splited/example.json2.json set tmf-630_carrier_footprint ID.`

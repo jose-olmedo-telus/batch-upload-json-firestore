@@ -20,7 +20,8 @@ class PopulateJsonFireStore {
     console.time("Time taken");
     this.db = new Firestore(config);
     // Obtain the relative path, method type, collection name arguments provided through
-    const [, , filepath, type, collectionname] = process.argv;
+    // [RELATIVE PATH TO FILE] [FIRESTORE METHOD] [COLLECTION NAME] [IDKEYFIRESTORE]
+    const [, , filepath, type, collectionname, idKey] = process.argv;
 
     // Obtain the absolute path for the given relative
     this.absolutepath = resolve(process.cwd(), filepath);
@@ -30,6 +31,12 @@ class PopulateJsonFireStore {
 
     // Obtain the firestore method type
     this.collectionname = collectionname;
+
+    this.idKey = idKey;
+    if (!this.idKey) {
+      console.error("idKey is needed");
+      this.exit(1);
+    }
 
     // Lets make sure the right firestore method is used.
     if (this.type !== "set" && this.type !== "batch") {
@@ -82,8 +89,6 @@ class PopulateJsonFireStore {
     } catch (e) {
       console.error(e.message);
     }
-
-    //data.forEach((item) => console.log(item));
     // loop through the data
     // Populate Firestore on each run
     // Make sure file has atleast one item.
@@ -91,12 +96,6 @@ class PopulateJsonFireStore {
       console.error("Make sure file contains items.");
     }
     const batch = this.db.batch();
-    //const collection = this.db.collection("Counters");
-    //const documents = await collection.get();
-    //const arr = documents.docs.map((x) => {
-    //  return x.data();
-    //});
-    //console.log(arr);
     for (var item of data) {
       try {
         if (this.type === "set") {
@@ -111,26 +110,26 @@ class PopulateJsonFireStore {
     if (this.type === "batch") {
       await batch.commit();
     }
-    console.log("IMPORT SUCCESSFUL!")
-    this.exit(0);
+    console.log("IMPORT SUCCESSFUL!");
+    console.timeEnd("Time taken");
   }
 
   // Sets data to firestore database
   // Firestore auto generated IDS
   batchFun(item, batch) {
-    console.log(`Batching item with id ${item["id"]}`);
+    console.log(`Batching item with id ${item[this.idKey]}`);
     const collectionRef = this.db
       .collection(this.collectionname)
-      .doc(String(item["id"]));
+      .doc(String(item[this.idKey]));
     batch.set(collectionRef, item);
   }
 
   // Set data with specified ID
   // Custom Generated IDS
   set(item) {
-    console.log(`setting item with id ${item["ID."]}`);
+    console.log(`setting item with id ${item[this.idKey]}`);
     return this.db
-      .doc(`${this.collectionname}/${item["ID."]}`)
+      .doc(`${this.collectionname}/${item[this.idKey]}`)
       .set(Object.assign({}, item))
       .then(() => true)
       .catch((e) => console.error(e.message));
