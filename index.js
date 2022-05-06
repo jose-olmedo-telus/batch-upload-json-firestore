@@ -101,7 +101,7 @@ class PopulateJsonFireStore {
       try {
         if (this.type === "set") {
           await this.set(item);
-        } else if (this.type === "batch") {
+        } else if (this.type === "batch") { //ALMOST ALWAYS BATCH SHOULD BE USED
           this.batchFun(item, batch);
         }
       } catch (e) {
@@ -109,6 +109,7 @@ class PopulateJsonFireStore {
       }
     }
     if (this.type === "batch") {
+      console.log("Beginning to commit the batch....")
       await batch.commit();
     }
     console.log("IMPORT SUCCESSFUL!");
@@ -148,4 +149,4 @@ const populateFireStore = new PopulateJsonFireStore();
 populateFireStore.populate();
 
 // command to run
-//node json-to-firestore/populateJsonFirestore.js ./json-to-firestore/data.json add demo-users
+//node index.js ./splited/example.json2.json set tmf-630_carrier_footprint ID.

@@ -13,4 +13,7 @@ index.js requires 4 arguments
 3. Name of the collections
 4. The id key of the object
 
-eg `node index.js ./splited/example.json2.json set tmf-630_carrier_footprint ID.`
+eg `node index.js ./splited/example.json2.json batch tmf-630_carrier_footprint ID.`
+
+
+ALMOST ALWAYS BATCH SHOULD BE USED INSTEAD OF set
