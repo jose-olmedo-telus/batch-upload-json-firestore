@@ -21,6 +21,7 @@ class PopulateJsonFireStore {
     this.db = new Firestore(config);
     // Obtain the relative path, method type, collection name arguments provided through
     // [RELATIVE PATH TO FILE] [FIRESTORE METHOD] [COLLECTION NAME] [IDKEYFIRESTORE]
+    // TEST PUSH: idKey is json key! 
     const [, , filepath, type, collectionname, idKey] = process.argv;
 
     // Obtain the absolute path for the given relative
