@@ -120,7 +120,7 @@ class PopulateJsonFireStore {
   // Sets data to firestore database
   // Firestore auto generated IDS
   batchFun(item, batch) {
-    console.log(`Batching item with id ${item[this.idKey]}`);
+    //console.log(`Batching item with id ${item[this.idKey]}`);
     const collectionRef = this.db
       .collection(this.collectionname)
       .doc(String(item[this.idKey]));
@@ -149,9 +149,9 @@ class PopulateJsonFireStore {
 
 
 // command to run
-//node index.js ./splited/example.json2.json set tmf-630_carrier_footprint ID.
+//node index.js ./splited/example.json batch tmf-630_carrier_footprint ID.
 const populateAll = async() => {
-  for(let i=6; i<=29; i++){
+  for(let i=1; i<=29; i++){
     const populateFireStore = new PopulateJsonFireStore(i);
     await populateFireStore.populate();
   }
