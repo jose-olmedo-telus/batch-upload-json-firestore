@@ -16,16 +16,16 @@ const config = {
 
 class PopulateJsonFireStore {
   // class constructor
-  constructor() {
+  constructor(fileNumber) {
     console.time("Time taken");
     this.db = new Firestore(config);
     // Obtain the relative path, method type, collection name arguments provided through
     // [RELATIVE PATH TO FILE] [FIRESTORE METHOD] [COLLECTION NAME] [IDKEYFIRESTORE]
     // TEST PUSH: idKey is json key! 
     const [, , filepath, type, collectionname, idKey] = process.argv;
-
+    const realPath = `${filepath}${fileNumber}.json`
     // Obtain the absolute path for the given relative
-    this.absolutepath = resolve(process.cwd(), filepath);
+    this.absolutepath = resolve(process.cwd(), realPath);
 
     // Obtain the firestore method type
     this.type = type;
@@ -146,8 +146,16 @@ class PopulateJsonFireStore {
 
 // create instance of class
 // Run populate function
-const populateFireStore = new PopulateJsonFireStore();
-populateFireStore.populate();
+
 
 // command to run
 //node index.js ./splited/example.json2.json set tmf-630_carrier_footprint ID.
+const populateAll = async() => {
+  for(let i=6; i<=29; i++){
+    const populateFireStore = new PopulateJsonFireStore(i);
+    await populateFireStore.populate();
+  }
+}
+populateAll()
+  .then(()=>console.log("success!"))
+  .catch(()=>console.log("failure lol"))
