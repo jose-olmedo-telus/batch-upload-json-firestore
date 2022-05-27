@@ -17,3 +17,10 @@ eg `node index.js ./splited/example.json2.json batch tmf-630_carrier_footprint I
 
 
 ALMOST ALWAYS BATCH SHOULD BE USED INSTEAD OF set
+
+`const populateAll = async() => {
+  for(let i=6; i<=29; i++){
+    ...
+  }
+}`
+Change i to be the range of the files
