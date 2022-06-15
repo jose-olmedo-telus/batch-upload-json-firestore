@@ -150,4 +150,4 @@ const populateFireStore = new PopulateJsonFireStore();
 populateFireStore.populate();
 
 // command to run
-//node index.js ./splited/example.json2.json set tmf-630_carrier_footprint ID.
+//node index.js ./splited/example.json2.json set tmf_630_nni_circuit ID.
